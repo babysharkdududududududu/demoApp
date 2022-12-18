@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
 public class DBConnection {
 
@@ -18,9 +17,9 @@ public class DBConnection {
     }
 
     public void connect() throws SQLException {
-        String url = "jdbc:sqlserver://localhost:1433;databasename=QLNT;encrypt=false";
+        String url = "jdbc:sqlserver://localhost:1433;databasename=BHX;trustServerCertificate=true;";
         String user = "sa";
-        String password = "giahuy1202.";
+        String password = "12022002";
         con = DriverManager.getConnection(url, user, password);
     }
 
@@ -34,8 +33,6 @@ public class DBConnection {
     }
 
     public static Connection getConnection() {
-    	SQLServerDataSource ds = new SQLServerDataSource();
-    	ds.setEncrypt(false);
         try {
             DBConnection.getInstance().connect();
         } catch (SQLException e1) {
