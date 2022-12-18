@@ -4,6 +4,7 @@
  */
 package gui;
 
+import java.awt.event.KeyEvent;
 import java.math.MathContext;
 
 /**
@@ -50,7 +51,7 @@ public class Gui_DangNhap extends javax.swing.JFrame {
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnHienMatKhau.setBackground(new java.awt.Color(204, 255, 255));
-        btnHienMatKhau.setIcon(new javax.swing.ImageIcon("D:\\Project\\demoApp\\src\\main\\java\\icon\\eye.png")); // NOI18N
+        btnHienMatKhau.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\demoApp\\src\\main\\java\\icon\\eye.png")); // NOI18N
         btnHienMatKhau.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnHienMatKhauActionPerformed(evt);
@@ -62,6 +63,11 @@ public class Gui_DangNhap extends javax.swing.JFrame {
         txtMatKhauAn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtMatKhauAnActionPerformed(evt);
+            }
+        });
+        txtMatKhauAn.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtMatKhauAnKeyPressed(evt);
             }
         });
         jPanel3.add(txtMatKhauAn, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 280, 257, 43));
@@ -76,11 +82,11 @@ public class Gui_DangNhap extends javax.swing.JFrame {
         label1.setText("THANH HUY\n");
         jPanel3.add(label1, new org.netbeans.lib.awtextra.AbsoluteConstraints(591, 10, -1, -1));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon("D:\\Project\\demoApp\\src\\main\\java\\icon\\user.png")); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\demoApp\\src\\main\\java\\icon\\user.png")); // NOI18N
         jLabel3.setText("jLabel2");
         jPanel3.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(368, 117, 68, -1));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon("D:\\Project\\demoApp\\src\\main\\java\\icon\\pass.png")); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\demoApp\\src\\main\\java\\icon\\pass.png")); // NOI18N
         jLabel2.setText("jLabel2");
         jPanel3.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(368, 257, 68, -1));
 
@@ -94,7 +100,7 @@ public class Gui_DangNhap extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(204, 255, 204));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("D:\\Project\\demoApp\\src\\main\\java\\icon\\images.jpg")); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\demoApp\\src\\main\\java\\icon\\images.jpg")); // NOI18N
         jLabel1.setText("jLabel1");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -117,7 +123,7 @@ public class Gui_DangNhap extends javax.swing.JFrame {
         jPanel3.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 483));
 
         btnQuenMatKhau.setBackground(new java.awt.Color(204, 255, 255));
-        btnQuenMatKhau.setIcon(new javax.swing.ImageIcon("D:\\Project\\demoApp\\src\\main\\java\\icon\\confused.png")); // NOI18N
+        btnQuenMatKhau.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\demoApp\\src\\main\\java\\icon\\confused.png")); // NOI18N
         btnQuenMatKhau.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnQuenMatKhauActionPerformed(evt);
@@ -134,10 +140,18 @@ public class Gui_DangNhap extends javax.swing.JFrame {
         jPanel3.add(txtMatKhau, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 280, 257, 42));
 
         btnDangNhap.setBackground(new java.awt.Color(204, 255, 255));
-        btnDangNhap.setIcon(new javax.swing.ImageIcon("D:\\Project\\demoApp\\src\\main\\java\\icon\\login.png")); // NOI18N
+        btnDangNhap.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\demoApp\\src\\main\\java\\icon\\login.png")); // NOI18N
         btnDangNhap.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDangNhapActionPerformed(evt);
+            }
+        });
+        btnDangNhap.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                btnDangNhapKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                btnDangNhapKeyReleased(evt);
             }
         });
         jPanel3.add(btnDangNhap, new org.netbeans.lib.awtextra.AbsoluteConstraints(505, 360, 93, 63));
@@ -204,6 +218,25 @@ public class Gui_DangNhap extends javax.swing.JFrame {
     private void txtMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMatKhauActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtMatKhauActionPerformed
+
+    private void btnDangNhapKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnDangNhapKeyReleased
+        // TODO add your handling code here:
+            
+    }//GEN-LAST:event_btnDangNhapKeyReleased
+
+    private void btnDangNhapKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnDangNhapKeyPressed
+        // TODO add your handling code here:
+    
+    }//GEN-LAST:event_btnDangNhapKeyPressed
+
+    private void txtMatKhauAnKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMatKhauAnKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+           this.dispose();
+           new Menu().setVisible(true); 
+        }
+        
+    }//GEN-LAST:event_txtMatKhauAnKeyPressed
 
     /**
      * @param args the command line arguments
