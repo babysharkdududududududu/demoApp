@@ -33,6 +33,10 @@ public class NhaCungCap {
         this.tenNCC = tenNCC;
     }
 
+    public NhaCungCap(String maNCC) {
+        this.maNCC = maNCC;
+    }
+
     public NhaCungCap() {
     }
 
