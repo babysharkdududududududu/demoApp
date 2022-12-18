@@ -4,17 +4,44 @@
  */
 package gui;
 
+import dao.NhanVienDAO;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Admin
  */
 public class NhanVien extends javax.swing.JPanel {
+    private NhanVienDAO nv_dao = new NhanVienDAO();
 
     /**
      * Creates new form NhanVien
      */
-    public NhanVien() {
+    public NhanVien() throws SQLException {
         initComponents();
+        docNhanVienVaoBang();
+    }
+    public void docNhanVienVaoBang() throws SQLException{
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        ArrayList<entity.NhanVien> listNV = nv_dao.getAllNhanVien();
+        int i =  1;
+        for(entity.NhanVien nv : listNV){
+            String gioiTinh;
+            if(nv.getGioiTinh()==1){
+                gioiTinh  = "Nam";
+            }
+            else{
+                gioiTinh="Nữ";
+            }
+            String row []= {i+"", nv.getMaNV(), nv.getHoTen(), nv.getNgaySinh()+"", nv.getDiaChi(), gioiTinh, nv.getChucVu()};
+            model.addRow(row);
+            i++;
+        }
+        
+        
+        
     }
 
     /**
@@ -73,7 +100,6 @@ public class NhanVien extends javax.swing.JPanel {
         jScrollPane1.setViewportView(jTable1);
 
         jButton1.setBackground(new java.awt.Color(255, 255, 204));
-        jButton1.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\QL\\src\\main\\java\\icon\\plus.png")); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -81,7 +107,6 @@ public class NhanVien extends javax.swing.JPanel {
         });
 
         jButton5.setBackground(new java.awt.Color(255, 255, 204));
-        jButton5.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\QL\\src\\main\\java\\icon\\delete (1).png")); // NOI18N
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
@@ -89,7 +114,6 @@ public class NhanVien extends javax.swing.JPanel {
         });
 
         jButton6.setBackground(new java.awt.Color(255, 255, 204));
-        jButton6.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\QL\\src\\main\\java\\icon\\swap.png")); // NOI18N
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
@@ -145,10 +169,10 @@ public class NhanVien extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(74, Short.MAX_VALUE))
         );
 

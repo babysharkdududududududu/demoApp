@@ -4,9 +4,19 @@
  */
 package gui;
 
+import dao.BanHangDao;
+import dao.LoaiSanPhamDAO;
+import dao.SanPhamDAO;
+import entity.LoaiSanPham;
+import entity.SanPham;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -14,14 +24,19 @@ import javax.swing.table.DefaultTableModel;
  * @author Admin
  */
 public class BanHanga extends javax.swing.JPanel {
+    private SanPhamDAO sp_dao = new SanPhamDAO();
+    private LoaiSanPhamDAO loai_dao =  new LoaiSanPhamDAO();
+    DefaultTableModel model,model1;
 
     /**
      * Creates new form BanHanga
      */
-    public BanHanga() {
+    public BanHanga() throws SQLException {
         initComponents();
         ngayHienTai();
         docSanPhamVaoBang();
+        taoMaHD();
+        docLoaiSanPhamLenCBB();
     }
     
     public void ngayHienTai(){
@@ -31,12 +46,31 @@ public class BanHanga extends javax.swing.JPanel {
         txtNgayHienTai.enable(false);
 //        System.out.println(sdf.format(date));
     }
-    public void docSanPhamVaoBang(){
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        String [] row  = {"STT", "Tên", "Danh mục", "a", "a"};
-        model.addRow(row);
-        
+    public void docSanPhamVaoBang() throws SQLException{
+        model = (DefaultTableModel) jTable1.getModel();
+        ArrayList<SanPham>  listsp = sp_dao.getAllSanPham();
+        int i=1;
+        for(SanPham sp : listsp){
+            String row[] = {i+"",sp.getMaThucPham(), sp.getDanhMuc(), sp.getTenThucPham(), sp.getGiaBan()+""};
+            model.addRow(row);
+            i++;
+        }
     }
+    public void taoMaHD(){
+        Random rd = new Random();
+        SimpleDateFormat sdf  =  new SimpleDateFormat("yyMMddhhmm");
+        Date date = new Date();
+        String ma = "HD"  + sdf.format(date) + String.format("%04d",rd.nextInt(1000));
+        txtMaHoaDon.setText(ma);
+        txtMaHoaDon.enable(false);
+    }
+    public void docLoaiSanPhamLenCBB() throws SQLException{
+        ArrayList<LoaiSanPham> loaiSP = loai_dao.getAllLoaiSP();
+        for(LoaiSanPham loaisp : loaiSP){
+            cbLoc.addItem(loaisp.getTenLoai());
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -54,7 +88,7 @@ public class BanHanga extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtMaHoaDon = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
         jTextField5 = new javax.swing.JTextField();
         txtNgayHienTai = new javax.swing.JTextField();
@@ -71,9 +105,10 @@ public class BanHanga extends javax.swing.JPanel {
         txtTimMa = new javax.swing.JTextField();
         cbLoc = new javax.swing.JComboBox<>();
         cbSapXep = new javax.swing.JComboBox<>();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        btnLoc = new javax.swing.JButton();
+        btnSapXep = new javax.swing.JButton();
+        btnLamMoi = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableGioHang = new javax.swing.JTable();
         btnXoa = new javax.swing.JButton();
@@ -94,9 +129,9 @@ public class BanHanga extends javax.swing.JPanel {
 
         jLabel4.setText("Ngày");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtMaHoaDon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtMaHoaDonActionPerformed(evt);
             }
         });
 
@@ -131,7 +166,7 @@ public class BanHanga extends javax.swing.JPanel {
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField1)
+                    .addComponent(txtMaHoaDon)
                     .addComponent(jTextField4)
                     .addComponent(jTextField5)
                     .addComponent(txtNgayHienTai))
@@ -143,7 +178,7 @@ public class BanHanga extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMaHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -200,20 +235,37 @@ public class BanHanga extends javax.swing.JPanel {
             }
         });
 
-        cbLoc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbLoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbLocActionPerformed(evt);
+            }
+        });
 
         cbSapXep.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Giá tăng", "Giá giảm", " " }));
 
-        jLabel11.setText("Lọc");
+        jButton1.setBackground(new java.awt.Color(242, 242, 242));
+        jButton1.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\demoApp\\src\\main\\java\\icon\\shopping-cart.png")); // NOI18N
+        jButton1.setBorder(null);
 
-        jLabel12.setText("Sắp xếp");
-
-        jButton3.setBackground(new java.awt.Color(242, 242, 242));
-        jButton3.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\QL\\src\\main\\java\\icon\\add-to-cart.png")); // NOI18N
-        jButton3.setBorder(null);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnLoc.setText("Lọc");
+        btnLoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnLocActionPerformed(evt);
+            }
+        });
+
+        btnSapXep.setText("Sắp xếp");
+        btnSapXep.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSapXepActionPerformed(evt);
+            }
+        });
+
+        btnLamMoi.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\demoApp\\src\\main\\java\\icon\\refresh.png")); // NOI18N
+        btnLamMoi.setBorder(null);
+        btnLamMoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLamMoiActionPerformed(evt);
             }
         });
 
@@ -234,42 +286,40 @@ public class BanHanga extends javax.swing.JPanel {
                         .addComponent(txtTimTen, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(64, 64, 64)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cbLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel12)
-                        .addGap(18, 18, 18)
-                        .addComponent(cbSapXep, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(144, Short.MAX_VALUE))
-            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                    .addContainerGap(509, Short.MAX_VALUE)
-                    .addComponent(jButton3)
-                    .addGap(43, 43, 43)))
+                    .addComponent(cbLoc, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cbSapXep, 0, 153, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnLoc)
+                    .addComponent(btnSapXep))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnLamMoi)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(txtTimTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbLoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(txtTimMa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbSapXep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(btnLamMoi)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                        .addComponent(jButton1))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(txtTimTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbLoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnLoc))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel10)
+                            .addComponent(txtTimMa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbSapXep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSapXep))))
                 .addContainerGap())
-            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                    .addContainerGap(16, Short.MAX_VALUE)
-                    .addComponent(jButton3)
-                    .addContainerGap()))
         );
 
         tableGioHang.setModel(new javax.swing.table.DefaultTableModel(
@@ -291,7 +341,7 @@ public class BanHanga extends javax.swing.JPanel {
         jScrollPane2.setViewportView(tableGioHang);
 
         btnXoa.setBackground(new java.awt.Color(242, 242, 242));
-        btnXoa.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\QL\\src\\main\\java\\icon\\delete.png")); // NOI18N
+        btnXoa.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\demoApp\\src\\main\\java\\icon\\delete.png")); // NOI18N
         btnXoa.setBorder(null);
         btnXoa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -300,7 +350,7 @@ public class BanHanga extends javax.swing.JPanel {
         });
 
         btnCho.setBackground(new java.awt.Color(242, 242, 242));
-        btnCho.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\QL\\src\\main\\java\\icon\\location.png")); // NOI18N
+        btnCho.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\demoApp\\src\\main\\java\\icon\\location.png")); // NOI18N
         btnCho.setBorder(null);
         btnCho.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -309,7 +359,7 @@ public class BanHanga extends javax.swing.JPanel {
         });
 
         btnThanhToan.setBackground(new java.awt.Color(242, 242, 242));
-        btnThanhToan.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\QL\\src\\main\\java\\icon\\bank-account.png")); // NOI18N
+        btnThanhToan.setIcon(new javax.swing.ImageIcon("D:\\workspace\\QL\\demoApp\\src\\main\\java\\icon\\bank-account.png")); // NOI18N
         btnThanhToan.setBorder(null);
         btnThanhToan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -394,7 +444,7 @@ public class BanHanga extends javax.swing.JPanel {
                             .addGap(33, 33, 33)
                             .addComponent(btnXoa, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(btnThanhToan, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Bán hàng", jPanel1);
@@ -407,7 +457,7 @@ public class BanHanga extends javax.swing.JPanel {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 674, Short.MAX_VALUE)
+            .addGap(0, 693, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Thống kê", jPanel2);
@@ -424,9 +474,9 @@ public class BanHanga extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void txtMaHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaHoaDonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_txtMaHoaDonActionPerformed
 
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
         // TODO add your handling code here:
@@ -452,10 +502,6 @@ public class BanHanga extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnXoaActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
-
     private void btnChoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnChoActionPerformed
@@ -468,19 +514,56 @@ public class BanHanga extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnDanhSachChoActionPerformed
 
+    private void cbLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbLocActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbLocActionPerformed
+
+    private void btnLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocActionPerformed
+        // TODO add your handling code here:
+        model1 = (DefaultTableModel) jTable1.getModel();
+        String duLieu  = (String) cbLoc.getSelectedItem();
+        int i=0;
+        try {
+            ArrayList<SanPham> listLoc = sp_dao.locLoaiSP(duLieu);
+            for(SanPham sp : listLoc){
+                model.setRowCount(0);
+                String row[] = {i+"",sp.getMaThucPham(), sp.getDanhMuc(), sp.getTenThucPham(), sp.getGiaBan()+""};
+                model1.addRow(row);
+                i++;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BanHanga.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnLocActionPerformed
+
+    private void btnSapXepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSapXepActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSapXepActionPerformed
+
+    private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
+        try {
+            // TODO add your handling code here:
+            model.setRowCount(0);
+            docSanPhamVaoBang();
+        } catch (SQLException ex) {
+            Logger.getLogger(BanHanga.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnLamMoiActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCho;
     private javax.swing.JButton btnDanhSachCho;
+    private javax.swing.JButton btnLamMoi;
+    private javax.swing.JButton btnLoc;
+    private javax.swing.JButton btnSapXep;
     private javax.swing.JButton btnThanhToan;
     private javax.swing.JButton btnXoa;
     private javax.swing.JComboBox<String> cbLoc;
     private javax.swing.JComboBox<String> cbSapXep;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -497,10 +580,10 @@ public class BanHanga extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTable tableGioHang;
+    private javax.swing.JTextField txtMaHoaDon;
     private javax.swing.JTextField txtNgayHienTai;
     private javax.swing.JTextField txtTimMa;
     private javax.swing.JTextField txtTimTen;
